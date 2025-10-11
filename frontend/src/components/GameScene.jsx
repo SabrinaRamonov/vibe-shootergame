@@ -4,6 +4,86 @@ import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { ITEM_COLORS, GAME_CONFIG } from '../data/mock';
 
+// Bullet trace component
+const BulletTrace = ({ start, end, onComplete }) => {
+  const lineRef = useRef();
+  const [opacity, setOpacity] = useState(1);
+
+  useFrame(() => {
+    if (opacity > 0) {
+      setOpacity(prev => Math.max(0, prev - 0.1));
+    } else {
+      onComplete();
+    }
+  });
+
+  const points = [start, end];
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+
+  return (
+    <line ref={lineRef} geometry={lineGeometry}>
+      <lineBasicMaterial color="#ffff00" transparent opacity={opacity} linewidth={2} />
+    </line>
+  );
+};
+
+// Weapon (AK-47 style)
+const Weapon = () => {
+  const weaponRef = useRef();
+  
+  useFrame((state) => {
+    if (weaponRef.current) {
+      // Slight weapon sway
+      weaponRef.current.position.x = Math.sin(state.clock.elapsedTime * 2) * 0.002;
+      weaponRef.current.position.y = Math.cos(state.clock.elapsedTime * 2) * 0.002;
+    }
+  });
+
+  return (
+    <group 
+      ref={weaponRef}
+      position={[0.3, -0.3, -0.5]} 
+      rotation={[0, -0.1, 0]}
+    >
+      {/* Main body */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[0.08, 0.08, 0.4]} />
+        <meshStandardMaterial color="#2a2a2a" metalness={0.8} roughness={0.4} />
+      </mesh>
+      
+      {/* Barrel */}
+      <mesh position={[0, 0.02, -0.3]}>
+        <cylinderGeometry args={[0.015, 0.015, 0.3, 8]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.9} roughness={0.2} />
+      </mesh>
+      
+      {/* Magazine */}
+      <mesh position={[0, -0.08, 0.05]}>
+        <boxGeometry args={[0.04, 0.12, 0.08]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.6} roughness={0.5} />
+      </mesh>
+      
+      {/* Stock */}
+      <mesh position={[0, 0, 0.25]}>
+        <boxGeometry args={[0.06, 0.06, 0.15]} />
+        <meshStandardMaterial color="#4a3520" roughness={0.7} />
+      </mesh>
+      
+      {/* Grip */}
+      <mesh position={[0, -0.05, 0.1]} rotation={[-0.3, 0, 0]}>
+        <boxGeometry args={[0.04, 0.08, 0.04]} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.6} />
+      </mesh>
+      
+      {/* Muzzle flash holder */}
+      <mesh position={[0, 0.02, -0.45]}>
+        <cylinderGeometry args={[0.025, 0.02, 0.03, 8]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.9} roughness={0.2} />
+      </mesh>
+    </group>
+  );
+};
+
 // Store environment components
 const StoreFloor = () => {
   return (
