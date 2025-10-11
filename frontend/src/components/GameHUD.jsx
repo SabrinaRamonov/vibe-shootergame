@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Check } from 'lucide-react';
 
-const GameHUD = ({ shoppingList, foundItems, score, timeLeft, onTimeUpdate }) => {
+const GameHUD = ({ shoppingList, foundItems, score, timeLeft, onTimeUpdate, controlsLocked }) => {
   useEffect(() => {
     if (timeLeft <= 0) return;
 
