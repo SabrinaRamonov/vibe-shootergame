@@ -99,11 +99,7 @@ const GameHUD = ({ shoppingList, foundItems, score, timeLeft, onTimeUpdate, cont
         textAlign: 'center'
       }}>
         <div style={{ fontSize: '14px' }}>
-          {!controlsLocked ? (
-            <span><strong>Click anywhere</strong> to start looking around</span>
-          ) : (
-            <span>Use <strong>WASD</strong> to move | <strong>Mouse</strong> to look | Walk into items to collect | <strong>ESC</strong> to pause</span>
-          )}
+          <strong>WASD</strong> to move | <strong>Click & Drag</strong> or <strong>Arrow Keys</strong> to look | Walk into items to collect
         </div>
       </div>
     </div>
