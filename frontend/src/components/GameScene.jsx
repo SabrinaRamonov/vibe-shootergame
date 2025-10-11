@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
-import { PointerLockControls, Text } from '@react-three/drei';
+import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { ITEM_COLORS, GAME_CONFIG } from '../data/mock';
 
