@@ -645,6 +645,8 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
 
 // Main scene
 const GameScene = ({ shoppingList, foundItems, onItemFound }) => {
+  const [bulletTraces, setBulletTraces] = useState([]);
+  
   const [itemPositions] = useState(() => {
     const positions = [];
     const spacing = 4;
@@ -659,12 +661,28 @@ const GameScene = ({ shoppingList, foundItems, onItemFound }) => {
       
       positions.push({
         name: item,
-        position: [x, 1, z]
+        position: [x, 1.2, z]
       });
     });
     
     return positions;
   });
+
+  const handleShoot = (start, end, itemName, hit) => {
+    // Add bullet trace
+    const traceId = Date.now() + Math.random();
+    setBulletTraces(prev => [...prev, { id: traceId, start, end }]);
+    
+    // Remove trace after animation
+    setTimeout(() => {
+      setBulletTraces(prev => prev.filter(t => t.id !== traceId));
+    }, 200);
+
+    // If hit an item on shopping list, collect it
+    if (hit && itemName && shoppingList.includes(itemName)) {
+      onItemFound(itemName);
+    }
+  };
 
   return (
     <>
