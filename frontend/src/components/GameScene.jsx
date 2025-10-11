@@ -42,8 +42,8 @@ const Weapon = () => {
   return (
     <group 
       ref={weaponRef}
-      position={[0.3, -0.3, -0.5]} 
-      rotation={[0, -0.1, 0]}
+      position={[0.4, -0.35, -0.6]} 
+      rotation={[0, -0.15, 0.05]}
     >
       {/* Main body */}
       <mesh position={[0, 0, 0]}>
