@@ -11,7 +11,7 @@ const BulletTrace = ({ start, end, onComplete }) => {
 
   useFrame(() => {
     if (opacity > 0) {
-      setOpacity(prev => Math.max(0, prev - 0.02)); // Slower fade
+      setOpacity(prev => Math.max(0, prev - 0.005)); // Much slower fade (4x slower)
     } else {
       onComplete();
     }
