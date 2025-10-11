@@ -11,7 +11,6 @@ const GroceryGame = () => {
   const [foundItems, setFoundItems] = useState([]);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_CONFIG.TIME_LIMIT);
-  const [controlsLocked, setControlsLocked] = useState(false);
 
   const handleItemFound = useCallback((itemName) => {
     if (foundItems.includes(itemName)) return;
