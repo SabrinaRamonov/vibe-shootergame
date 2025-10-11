@@ -727,7 +727,7 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
     }
   });
 
-  return <Weapon />;
+  return <Weapon isShooting={isShooting} />;
 };
 
 // Main scene
