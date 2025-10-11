@@ -79,12 +79,15 @@ const GroceryItem = ({ name, position, onCollect, isFound }) => {
   );
 };
 
-// Player controller with WASD
+// Custom FPS controller without pointer lock
 const Player = ({ onItemCollect, itemPositions, foundItems }) => {
-  const { camera } = useThree();
+  const { camera, gl } = useThree();
   const moveSpeed = 0.1;
+  const lookSpeed = 0.002;
   const keysPressed = useRef({});
-  const velocity = useRef(new THREE.Vector3());
+  const euler = useRef(new THREE.Euler(0, 0, 0, 'YXZ'));
+  const mouseDown = useRef(false);
+  const lastMousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -94,14 +97,75 @@ const Player = ({ onItemCollect, itemPositions, foundItems }) => {
       keysPressed.current[e.code] = false;
     };
 
+    const handleMouseDown = (e) => {
+      if (e.button === 0) { // Left click
+        mouseDown.current = true;
+        lastMousePos.current = { x: e.clientX, y: e.clientY };
+      }
+    };
+
+    const handleMouseUp = () => {
+      mouseDown.current = false;
+    };
+
+    const handleMouseMove = (e) => {
+      if (mouseDown.current) {
+        const deltaX = e.clientX - lastMousePos.current.x;
+        const deltaY = e.clientY - lastMousePos.current.y;
+
+        euler.current.setFromQuaternion(camera.quaternion);
+        euler.current.y -= deltaX * lookSpeed;
+        euler.current.x -= deltaY * lookSpeed;
+        euler.current.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, euler.current.x));
+        camera.quaternion.setFromEuler(euler.current);
+
+        lastMousePos.current = { x: e.clientX, y: e.clientY };
+      }
+    };
+
+    // Arrow keys for looking
+    const handleArrowLook = () => {
+      if (keysPressed.current['ArrowLeft']) {
+        euler.current.setFromQuaternion(camera.quaternion);
+        euler.current.y += 0.05;
+        camera.quaternion.setFromEuler(euler.current);
+      }
+      if (keysPressed.current['ArrowRight']) {
+        euler.current.setFromQuaternion(camera.quaternion);
+        euler.current.y -= 0.05;
+        camera.quaternion.setFromEuler(euler.current);
+      }
+      if (keysPressed.current['ArrowUp']) {
+        euler.current.setFromQuaternion(camera.quaternion);
+        euler.current.x += 0.05;
+        euler.current.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, euler.current.x));
+        camera.quaternion.setFromEuler(euler.current);
+      }
+      if (keysPressed.current['ArrowDown']) {
+        euler.current.setFromQuaternion(camera.quaternion);
+        euler.current.x -= 0.05;
+        euler.current.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, euler.current.x));
+        camera.quaternion.setFromEuler(euler.current);
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    gl.domElement.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    const arrowInterval = setInterval(handleArrowLook, 16);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      gl.domElement.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handleMouseMove);
+      clearInterval(arrowInterval);
     };
-  }, []);
+  }, [camera, gl]);
 
   useFrame(() => {
     const direction = new THREE.Vector3();
@@ -140,7 +204,7 @@ const Player = ({ onItemCollect, itemPositions, foundItems }) => {
     }
   });
 
-  return <PointerLockControls />;
+  return null;
 };
 
 // Main scene
