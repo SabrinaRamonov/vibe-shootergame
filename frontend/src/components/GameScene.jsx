@@ -606,6 +606,10 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
     };
 
     const handleShoot = () => {
+      // Set shooting state
+      setIsShooting(true);
+      setTimeout(() => setIsShooting(false), 150);
+      
       // Raycast from camera center
       const raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
