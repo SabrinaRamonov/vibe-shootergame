@@ -54,8 +54,8 @@ const GroceryGame = () => {
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <Canvas
-        camera={{ position: [0, 1.6, 0], fov: 75 }}
-        style={{ background: '#87CEEB' }}
+        camera={{ position: [0, 1.6, -10], fov: 75 }}
+        style={{ background: '#d6e8f5' }}
       >
         <GameScene
           shoppingList={shoppingList}
