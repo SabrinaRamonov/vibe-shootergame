@@ -596,11 +596,24 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
       setIsShooting(true);
       setTimeout(() => setIsShooting(false), 150);
       
-      // Raycast from camera center
+      // Raycast from camera center (crosshair position)
       const raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
       
-      // Get all item meshes
+      // Calculate muzzle position (weapon barrel end)
+      const muzzleOffset = new THREE.Vector3(0.4, -0.33, -0.95); // Weapon position + barrel length
+      const muzzleWorld = new THREE.Vector3();
+      
+      // Transform muzzle offset to world space
+      const weaponMatrix = new THREE.Matrix4();
+      weaponMatrix.makeRotationFromQuaternion(camera.quaternion);
+      muzzleWorld.copy(muzzleOffset).applyMatrix4(weaponMatrix).add(camera.position);
+      
+      // Get raycast direction from camera (crosshair aim)
+      const rayDirection = new THREE.Vector3();
+      camera.getWorldDirection(rayDirection);
+      
+      // Get all item meshes and scene objects
       const itemMeshes = [];
       scene.traverse((obj) => {
         if (obj.userData.isItem && !obj.userData.isFound) {
@@ -608,10 +621,18 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
         }
       });
       
+      // Raycast to find hit point
       const intersects = raycaster.intersectObjects(itemMeshes, true);
       
+      let endPoint;
+      let hitItem = null;
+      let isHit = false;
+      
       if (intersects.length > 0) {
+        // Hit an item - use exact hit point
+        endPoint = intersects[0].point.clone();
         const hitObject = intersects[0].object;
+        
         // Find parent group with item name
         let itemGroup = hitObject;
         while (itemGroup.parent && !itemGroup.userData.itemName) {
@@ -619,20 +640,16 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
         }
         
         if (itemGroup.userData.itemName) {
-          onShoot(
-            camera.position.clone(),
-            intersects[0].point,
-            itemGroup.userData.itemName,
-            true
-          );
+          hitItem = itemGroup.userData.itemName;
+          isHit = true;
         }
       } else {
-        // Shoot into distance
-        const direction = new THREE.Vector3();
-        camera.getWorldDirection(direction);
-        const endPoint = camera.position.clone().add(direction.multiplyScalar(50));
-        onShoot(camera.position.clone(), endPoint, null, false);
+        // No hit - shoot to max distance in crosshair direction
+        endPoint = camera.position.clone().add(rayDirection.multiplyScalar(100));
       }
+      
+      // Create bullet trace from muzzle to end point
+      onShoot(muzzleWorld, endPoint, hitItem, isHit);
     };
 
     // Arrow keys for looking
