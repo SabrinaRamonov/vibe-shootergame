@@ -74,15 +74,32 @@ const BulletTrace = ({ start, end, onComplete }) => {
   );
 };
 
-// Weapon (AK-47 style)
-const Weapon = () => {
+// Weapon (AK-47 style) with muzzle flash
+const Weapon = ({ isShooting }) => {
   const weaponRef = useRef();
+  const [flashVisible, setFlashVisible] = useState(false);
+  
+  useEffect(() => {
+    if (isShooting) {
+      setFlashVisible(true);
+      setTimeout(() => setFlashVisible(false), 100);
+    }
+  }, [isShooting]);
   
   useFrame((state) => {
     if (weaponRef.current) {
       // Slight weapon sway
       weaponRef.current.position.x = Math.sin(state.clock.elapsedTime * 2) * 0.002;
       weaponRef.current.position.y = Math.cos(state.clock.elapsedTime * 2) * 0.002;
+      
+      // Recoil animation when shooting
+      if (isShooting) {
+        weaponRef.current.position.z = -0.55;
+        weaponRef.current.rotation.x = 0.05;
+      } else {
+        weaponRef.current.position.z += (-0.6 - weaponRef.current.position.z) * 0.2;
+        weaponRef.current.rotation.x += (0 - weaponRef.current.rotation.x) * 0.2;
+      }
     }
   });
 
