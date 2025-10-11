@@ -182,7 +182,7 @@ const Home = () => {
           fontSize: '14px',
           color: '#666'
         }}>
-          <strong>How to Play:</strong> Use WASD keys to move, click & drag (or arrow keys) to look around. Walk into items to collect them. Find all items before time runs out!
+          <strong>How to Play:</strong> Use WASD keys to move, right-click & drag (or arrow keys) to look around. LEFT CLICK to shoot items off shelves! Find all items on your shopping list before time runs out!
         </div>
       </div>
     </div>
