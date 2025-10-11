@@ -531,44 +531,110 @@ const GameScene = ({ shoppingList, foundItems, onItemFound }) => {
 
   return (
     <>
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[10, 20, 10]} intensity={1.2} castShadow />
-      <directionalLight position={[-10, 20, -10]} intensity={0.8} />
-      <pointLight position={[0, 10, 0]} intensity={1} />
-      <hemisphereLight intensity={0.5} />
+      {/* Enhanced lighting */}
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[15, 20, 15]} intensity={1} castShadow />
+      <directionalLight position={[-15, 20, -15]} intensity={0.7} />
+      <hemisphereLight intensity={0.4} groundColor="#cccccc" />
       
-      <fog attach="fog" args={['#87CEEB', 30, 50]} />
+      <fog attach="fog" args={['#d6e8f5', 35, 55]} />
 
       <StoreFloor />
+      <Ceiling />
 
-      {/* Store walls */}
+      {/* Store walls with better materials */}
       <mesh position={[0, 2, -GAME_CONFIG.STORE_SIZE/2]} receiveShadow>
         <boxGeometry args={[GAME_CONFIG.STORE_SIZE, 4, 0.5]} />
-        <meshStandardMaterial color="#e0e0e0" />
+        <meshStandardMaterial color="#f5f5f0" roughness={0.6} />
       </mesh>
       <mesh position={[0, 2, GAME_CONFIG.STORE_SIZE/2]} receiveShadow>
         <boxGeometry args={[GAME_CONFIG.STORE_SIZE, 4, 0.5]} />
-        <meshStandardMaterial color="#e0e0e0" />
+        <meshStandardMaterial color="#f5f5f0" roughness={0.6} />
       </mesh>
       <mesh position={[-GAME_CONFIG.STORE_SIZE/2, 2, 0]} receiveShadow>
         <boxGeometry args={[0.5, 4, GAME_CONFIG.STORE_SIZE]} />
-        <meshStandardMaterial color="#e0e0e0" />
+        <meshStandardMaterial color="#f5f5f0" roughness={0.6} />
       </mesh>
       <mesh position={[GAME_CONFIG.STORE_SIZE/2, 2, 0]} receiveShadow>
         <boxGeometry args={[0.5, 4, GAME_CONFIG.STORE_SIZE]} />
-        <meshStandardMaterial color="#e0e0e0" />
+        <meshStandardMaterial color="#f5f5f0" roughness={0.6} />
       </mesh>
 
-      {/* Create aisles with shelves */}
+      {/* Store entrance sign */}
+      <group position={[0, 3, -19]}>
+        <mesh>
+          <boxGeometry args={[8, 0.8, 0.2]} />
+          <meshStandardMaterial color="#ff6b35" emissive="#ff6b35" emissiveIntensity={0.3} />
+        </mesh>
+        <Text
+          position={[0, 0, 0.11]}
+          fontSize={0.4}
+          color="#ffffff"
+          anchorX="center"
+          anchorY="middle"
+          fontWeight="bold"
+        >
+          GROCERY RUSH
+        </Text>
+      </group>
+
+      {/* Checkout counter area */}
+      <group position={[0, 0, -15]}>
+        <mesh position={[0, 0.5, 0]}>
+          <boxGeometry args={[6, 1, 1.5]} />
+          <meshStandardMaterial color="#4a5568" roughness={0.4} />
+        </mesh>
+        <mesh position={[0, 1.2, 0]}>
+          <boxGeometry args={[5.5, 0.1, 1.2]} />
+          <meshStandardMaterial color="#2d3748" roughness={0.3} metalness={0.5} />
+        </mesh>
+      </group>
+
+      {/* Aisle signs */}
+      {[-8, -4, 4, 8].map((x, i) => (
+        <group key={`sign-${i}`} position={[x, 3.2, 0]}>
+          <mesh>
+            <boxGeometry args={[1.5, 0.4, 0.05]} />
+            <meshStandardMaterial color="#3b82f6" />
+          </mesh>
+          <Text
+            position={[0, 0, 0.03]}
+            fontSize={0.18}
+            color="#ffffff"
+            anchorX="center"
+            anchorY="middle"
+          >
+            Aisle {i + 1}
+          </Text>
+        </group>
+      ))}
+
+      {/* Create aisles with enhanced shelves */}
       {[-8, -4, 4, 8].map((x, i) => (
         <React.Fragment key={i}>
-          <Shelf position={[x, 0, -6]} />
+          <Shelf position={[x, 0, -8]} />
+          <Shelf position={[x, 0, -4]} />
           <Shelf position={[x, 0, 0]} />
-          <Shelf position={[x, 0, 6]} />
+          <Shelf position={[x, 0, 4]} />
+          <Shelf position={[x, 0, 8]} />
         </React.Fragment>
       ))}
 
-      {/* Render items */}
+      {/* Shopping carts decoration */}
+      {[-15, 15].map((z, i) => (
+        <group key={`cart-${i}`} position={[-17, 0, z]}>
+          <mesh position={[0, 0.4, 0]}>
+            <boxGeometry args={[0.5, 0.6, 0.7]} />
+            <meshStandardMaterial color="#c0c0c0" metalness={0.8} roughness={0.3} />
+          </mesh>
+          <mesh position={[0, 0.15, 0]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.3, 8]} />
+            <meshStandardMaterial color="#404040" />
+          </mesh>
+        </group>
+      ))}
+
+      {/* Render items with enhanced models */}
       {itemPositions.map((item, index) => (
         <GroceryItem
           key={index}
