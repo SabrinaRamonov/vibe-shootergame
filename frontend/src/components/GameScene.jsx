@@ -23,7 +23,7 @@ const BulletTrace = ({ start, end, onComplete }) => {
       <Line
         points={[start, end]}
         color="#ffff00"
-        lineWidth={3}
+        lineWidth={5}
         transparent
         opacity={opacity}
       />
@@ -32,28 +32,47 @@ const BulletTrace = ({ start, end, onComplete }) => {
       <Line
         points={[start, end]}
         color="#ff8800"
-        lineWidth={6}
+        lineWidth={10}
         transparent
-        opacity={opacity * 0.4}
+        opacity={opacity * 0.5}
       />
       
-      {/* Impact point glow */}
+      {/* Outer wide glow */}
+      <Line
+        points={[start, end]}
+        color="#ffaa00"
+        lineWidth={15}
+        transparent
+        opacity={opacity * 0.2}
+      />
+      
+      {/* Impact point bright glow */}
       <mesh position={[end.x, end.y, end.z]}>
-        <sphereGeometry args={[0.08, 8, 8]} />
+        <sphereGeometry args={[0.12, 8, 8]} />
         <meshBasicMaterial 
           color="#ffff00" 
           transparent 
-          opacity={opacity * 0.9}
+          opacity={opacity * 0.95}
         />
       </mesh>
       
       {/* Outer impact glow */}
       <mesh position={[end.x, end.y, end.z]}>
-        <sphereGeometry args={[0.15, 8, 8]} />
+        <sphereGeometry args={[0.2, 8, 8]} />
         <meshBasicMaterial 
           color="#ff6600" 
           transparent 
-          opacity={opacity * 0.4}
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+      
+      {/* Start point glow (muzzle) */}
+      <mesh position={[start.x, start.y, start.z]}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshBasicMaterial 
+          color="#ffaa00" 
+          transparent 
+          opacity={opacity * 0.7}
         />
       </mesh>
     </group>
