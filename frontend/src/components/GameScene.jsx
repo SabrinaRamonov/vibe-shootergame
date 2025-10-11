@@ -4,13 +4,67 @@ import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { ITEM_COLORS, GAME_CONFIG } from '../data/mock';
 
-// Store environment component
+// Store environment components
 const StoreFloor = () => {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-      <planeGeometry args={[GAME_CONFIG.STORE_SIZE, GAME_CONFIG.STORE_SIZE]} />
-      <meshStandardMaterial color="#f0f0f0" />
-    </mesh>
+    <group>
+      {/* Main floor with tile pattern */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+        <planeGeometry args={[GAME_CONFIG.STORE_SIZE, GAME_CONFIG.STORE_SIZE]} />
+        <meshStandardMaterial 
+          color="#e8e8e8"
+          roughness={0.3}
+          metalness={0.1}
+        />
+      </mesh>
+      
+      {/* Floor tiles grid pattern */}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <mesh 
+          key={`line-x-${i}`} 
+          position={[-GAME_CONFIG.STORE_SIZE/2 + i*2, 0.01, 0]} 
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <planeGeometry args={[0.05, GAME_CONFIG.STORE_SIZE]} />
+          <meshBasicMaterial color="#d0d0d0" transparent opacity={0.3} />
+        </mesh>
+      ))}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <mesh 
+          key={`line-z-${i}`} 
+          position={[0, 0.01, -GAME_CONFIG.STORE_SIZE/2 + i*2]} 
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <planeGeometry args={[GAME_CONFIG.STORE_SIZE, 0.05]} />
+          <meshBasicMaterial color="#d0d0d0" transparent opacity={0.3} />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
+// Ceiling with lights
+const Ceiling = () => {
+  return (
+    <group>
+      <mesh position={[0, 4, 0]} rotation={[Math.PI / 2, 0, 0]} receiveShadow>
+        <planeGeometry args={[GAME_CONFIG.STORE_SIZE, GAME_CONFIG.STORE_SIZE]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.8} />
+      </mesh>
+      
+      {/* Ceiling lights */}
+      {[-10, -5, 0, 5, 10].map((x) =>
+        [-10, 0, 10].map((z) => (
+          <group key={`light-${x}-${z}`} position={[x, 3.8, z]}>
+            <mesh>
+              <boxGeometry args={[1.5, 0.1, 0.4]} />
+              <meshStandardMaterial color="#ffffff" emissive="#ffffe0" emissiveIntensity={0.8} />
+            </mesh>
+            <pointLight position={[0, -0.3, 0]} intensity={0.5} distance={8} color="#ffffee" />
+          </group>
+        ))
+      )}
+    </group>
   );
 };
 
