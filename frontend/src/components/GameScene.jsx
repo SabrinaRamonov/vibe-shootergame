@@ -1,73 +1,59 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
+import { Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { ITEM_COLORS, GAME_CONFIG } from '../data/mock';
 
 // Enhanced bullet trace component
 const BulletTrace = ({ start, end, onComplete }) => {
-  const meshRef = useRef();
+  const groupRef = useRef();
   const [opacity, setOpacity] = useState(1);
-  const [scale, setScale] = useState(1);
 
   useFrame(() => {
     if (opacity > 0) {
-      setOpacity(prev => Math.max(0, prev - 0.015)); // Slower fade
-      setScale(prev => prev * 0.98); // Shrink slightly
+      setOpacity(prev => Math.max(0, prev - 0.02)); // Slower fade
     } else {
       onComplete();
     }
   });
 
-  const direction = new THREE.Vector3().subVectors(end, start);
-  const length = direction.length();
-  const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-  
-  // Create orientation
-  const orientation = new THREE.Matrix4();
-  orientation.lookAt(start, end, new THREE.Object3D().up);
-  const rotation = new THREE.Euler().setFromRotationMatrix(orientation);
-
   return (
-    <group>
-      {/* Main bright trace */}
-      <mesh 
-        ref={meshRef}
-        position={midpoint}
-        rotation={[rotation.x, rotation.y, rotation.z + Math.PI / 2]}
-      >
-        <cylinderGeometry args={[0.01 * scale, 0.01 * scale, length, 4]} />
-        <meshBasicMaterial 
-          color="#ffff00" 
-          transparent 
-          opacity={opacity}
-          emissive="#ffff00"
-          emissiveIntensity={2}
-        />
-      </mesh>
+    <group ref={groupRef}>
+      {/* Main bright yellow trace line */}
+      <Line
+        points={[start, end]}
+        color="#ffff00"
+        lineWidth={3}
+        transparent
+        opacity={opacity}
+      />
       
-      {/* Glow effect */}
-      <mesh 
-        position={midpoint}
-        rotation={[rotation.x, rotation.y, rotation.z + Math.PI / 2]}
-      >
-        <cylinderGeometry args={[0.03 * scale, 0.03 * scale, length, 4]} />
-        <meshBasicMaterial 
-          color="#ffaa00" 
-          transparent 
-          opacity={opacity * 0.3}
-        />
-      </mesh>
+      {/* Secondary orange glow line */}
+      <Line
+        points={[start, end]}
+        color="#ff8800"
+        lineWidth={6}
+        transparent
+        opacity={opacity * 0.4}
+      />
       
       {/* Impact point glow */}
-      <mesh position={end}>
-        <sphereGeometry args={[0.05 * scale, 8, 8]} />
+      <mesh position={[end.x, end.y, end.z]}>
+        <sphereGeometry args={[0.08, 8, 8]} />
         <meshBasicMaterial 
           color="#ffff00" 
           transparent 
-          opacity={opacity * 0.8}
-          emissive="#ffff00"
-          emissiveIntensity={3}
+          opacity={opacity * 0.9}
+        />
+      </mesh>
+      
+      {/* Outer impact glow */}
+      <mesh position={[end.x, end.y, end.z]}>
+        <sphereGeometry args={[0.15, 8, 8]} />
+        <meshBasicMaterial 
+          color="#ff6600" 
+          transparent 
+          opacity={opacity * 0.4}
         />
       </mesh>
     </group>
