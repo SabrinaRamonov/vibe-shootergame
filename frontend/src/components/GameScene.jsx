@@ -800,10 +800,21 @@ const GameScene = ({ shoppingList, foundItems, onItemFound }) => {
         />
       ))}
 
+      {/* Render bullet traces */}
+      {bulletTraces.map((trace) => (
+        <BulletTrace
+          key={trace.id}
+          start={trace.start}
+          end={trace.end}
+          onComplete={() => {}}
+        />
+      ))}
+
       <Player
         onItemCollect={onItemFound}
         itemPositions={itemPositions}
         foundItems={foundItems}
+        onShoot={handleShoot}
       />
     </>
   );
