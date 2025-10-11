@@ -169,7 +169,7 @@ const GameHUD = ({ shoppingList, foundItems, score, timeLeft, onTimeUpdate }) =>
         textAlign: 'center'
       }}>
         <div style={{ fontSize: '14px' }}>
-          <strong>WASD</strong> to move | <strong>Click & Drag</strong> or <strong>Arrow Keys</strong> to look | Walk into items to collect
+          <strong>WASD</strong> to move | <strong>RIGHT CLICK & DRAG</strong> or <strong>Arrow Keys</strong> to look | <strong>LEFT CLICK</strong> to shoot
         </div>
       </div>
     </div>
