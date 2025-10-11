@@ -57,6 +57,7 @@ const GroceryGame = () => {
       <Canvas
         camera={{ position: [0, 1.6, 0], fov: 75 }}
         style={{ background: '#87CEEB' }}
+        onClick={() => setControlsLocked(true)}
       >
         <GameScene
           shoppingList={shoppingList}
@@ -70,6 +71,7 @@ const GroceryGame = () => {
         score={score}
         timeLeft={timeLeft}
         onTimeUpdate={handleTimeUpdate}
+        controlsLocked={controlsLocked}
       />
     </div>
   );
