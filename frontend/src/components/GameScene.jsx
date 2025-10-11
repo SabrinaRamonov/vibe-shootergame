@@ -68,25 +68,44 @@ const Ceiling = () => {
   );
 };
 
-// Shelf component
+// Enhanced shelf component
 const Shelf = ({ position }) => {
   return (
     <group position={position}>
-      {/* Base */}
-      <mesh position={[0, 0.5, 0]}>
-        <boxGeometry args={[3, 1, 0.3]} />
-        <meshStandardMaterial color="#8B4513" />
+      {/* Metal frame - sides */}
+      <mesh position={[-1.4, 1, 0]}>
+        <boxGeometry args={[0.08, 2, 0.4]} />
+        <meshStandardMaterial color="#606060" metalness={0.8} roughness={0.3} />
       </mesh>
-      {/* Top shelf */}
-      <mesh position={[0, 1.5, 0]}>
-        <boxGeometry args={[3, 0.1, 0.3]} />
-        <meshStandardMaterial color="#8B4513" />
+      <mesh position={[1.4, 1, 0]}>
+        <boxGeometry args={[0.08, 2, 0.4]} />
+        <meshStandardMaterial color="#606060" metalness={0.8} roughness={0.3} />
       </mesh>
-      {/* Middle shelf */}
-      <mesh position={[0, 1, 0]}>
-        <boxGeometry args={[3, 0.1, 0.3]} />
-        <meshStandardMaterial color="#8B4513" />
+      
+      {/* Wooden shelves */}
+      {[0.3, 0.9, 1.5, 1.9].map((y, i) => (
+        <mesh key={i} position={[0, y, 0]}>
+          <boxGeometry args={[2.8, 0.06, 0.35]} />
+          <meshStandardMaterial 
+            color={i % 2 === 0 ? "#d4a574" : "#c89563"} 
+            roughness={0.7}
+          />
+        </mesh>
+      ))}
+      
+      {/* Back panel */}
+      <mesh position={[0, 1, -0.15]}>
+        <boxGeometry args={[2.8, 2, 0.02]} />
+        <meshStandardMaterial color="#f5f5f5" />
       </mesh>
+      
+      {/* Price tag holders */}
+      {[-0.9, 0, 0.9].map((x, i) => (
+        <mesh key={i} position={[x, 0.25, 0.2]}>
+          <boxGeometry args={[0.3, 0.02, 0.15]} />
+          <meshStandardMaterial color="#ffffff" />
+        </mesh>
+      ))}
     </group>
   );
 };
