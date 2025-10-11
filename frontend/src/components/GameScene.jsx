@@ -564,6 +564,7 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
   const euler = useRef(new THREE.Euler(0, 0, 0, 'YXZ'));
   const mouseDown = useRef(false);
   const lastMousePos = useRef({ x: 0, y: 0 });
+  const [isShooting, setIsShooting] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
