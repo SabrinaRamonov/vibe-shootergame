@@ -622,20 +622,10 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
       const halfSize = GAME_CONFIG.STORE_SIZE / 2 - 1;
       camera.position.x = Math.max(-halfSize, Math.min(halfSize, camera.position.x));
       camera.position.z = Math.max(-halfSize, Math.min(halfSize, camera.position.z));
-
-      // Check for item collision
-      itemPositions.forEach((item) => {
-        if (foundItems.includes(item.name)) return;
-        
-        const distance = camera.position.distanceTo(new THREE.Vector3(...item.position));
-        if (distance < 1) {
-          onItemCollect(item.name);
-        }
-      });
     }
   });
 
-  return null;
+  return <Weapon />;
 };
 
 // Main scene
