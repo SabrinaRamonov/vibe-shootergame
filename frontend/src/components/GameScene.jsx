@@ -4,26 +4,73 @@ import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { ITEM_COLORS, GAME_CONFIG } from '../data/mock';
 
-// Bullet trace component
+// Enhanced bullet trace component
 const BulletTrace = ({ start, end, onComplete }) => {
-  const lineRef = useRef();
+  const meshRef = useRef();
   const [opacity, setOpacity] = useState(1);
+  const [scale, setScale] = useState(1);
 
   useFrame(() => {
     if (opacity > 0) {
-      setOpacity(prev => Math.max(0, prev - 0.1));
+      setOpacity(prev => Math.max(0, prev - 0.015)); // Slower fade
+      setScale(prev => prev * 0.98); // Shrink slightly
     } else {
       onComplete();
     }
   });
 
-  const points = [start, end];
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+  const direction = new THREE.Vector3().subVectors(end, start);
+  const length = direction.length();
+  const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+  
+  // Create orientation
+  const orientation = new THREE.Matrix4();
+  orientation.lookAt(start, end, new THREE.Object3D().up);
+  const rotation = new THREE.Euler().setFromRotationMatrix(orientation);
 
   return (
-    <line ref={lineRef} geometry={lineGeometry}>
-      <lineBasicMaterial color="#ffff00" transparent opacity={opacity} linewidth={2} />
-    </line>
+    <group>
+      {/* Main bright trace */}
+      <mesh 
+        ref={meshRef}
+        position={midpoint}
+        rotation={[rotation.x, rotation.y, rotation.z + Math.PI / 2]}
+      >
+        <cylinderGeometry args={[0.01 * scale, 0.01 * scale, length, 4]} />
+        <meshBasicMaterial 
+          color="#ffff00" 
+          transparent 
+          opacity={opacity}
+          emissive="#ffff00"
+          emissiveIntensity={2}
+        />
+      </mesh>
+      
+      {/* Glow effect */}
+      <mesh 
+        position={midpoint}
+        rotation={[rotation.x, rotation.y, rotation.z + Math.PI / 2]}
+      >
+        <cylinderGeometry args={[0.03 * scale, 0.03 * scale, length, 4]} />
+        <meshBasicMaterial 
+          color="#ffaa00" 
+          transparent 
+          opacity={opacity * 0.3}
+        />
+      </mesh>
+      
+      {/* Impact point glow */}
+      <mesh position={end}>
+        <sphereGeometry args={[0.05 * scale, 8, 8]} />
+        <meshBasicMaterial 
+          color="#ffff00" 
+          transparent 
+          opacity={opacity * 0.8}
+          emissive="#ffff00"
+          emissiveIntensity={3}
+        />
+      </mesh>
+    </group>
   );
 };
 
