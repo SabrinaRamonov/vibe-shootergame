@@ -720,10 +720,10 @@ const GameScene = ({ shoppingList, foundItems, onItemFound }) => {
     const traceId = Date.now() + Math.random();
     setBulletTraces(prev => [...prev, { id: traceId, start, end }]);
     
-    // Remove trace after animation
+    // Remove trace after longer animation
     setTimeout(() => {
       setBulletTraces(prev => prev.filter(t => t.id !== traceId));
-    }, 200);
+    }, 1000); // Increased from 200ms to 1000ms
 
     // If hit an item on shopping list, collect it
     if (hit && itemName && shoppingList.includes(itemName)) {
