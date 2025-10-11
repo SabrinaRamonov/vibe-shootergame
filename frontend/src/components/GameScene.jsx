@@ -418,6 +418,21 @@ const GroceryItem = ({ name, position, onCollect, isFound }) => {
     }
   });
 
+  useEffect(() => {
+    if (groupRef.current) {
+      // Mark all children for raycasting
+      groupRef.current.traverse((child) => {
+        if (child.isMesh) {
+          child.userData.isItem = true;
+          child.userData.isFound = isFound;
+        }
+      });
+      groupRef.current.userData.itemName = name;
+      groupRef.current.userData.isItem = true;
+      groupRef.current.userData.isFound = isFound;
+    }
+  }, [name, isFound]);
+
   if (isFound) return null;
 
   return (
@@ -442,16 +457,16 @@ const GroceryItem = ({ name, position, onCollect, isFound }) => {
         {name}
       </Text>
       
-      {/* Floating indicator */}
+      {/* Shoot indicator */}
       {hovered && (
         <Text
           position={[0, 0.6, 0]}
           fontSize={0.12}
-          color="#22c55e"
+          color="#ff6b35"
           anchorX="center"
           anchorY="middle"
         >
-          Walk here!
+          SHOOT!
         </Text>
       )}
     </group>
