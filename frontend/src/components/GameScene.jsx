@@ -168,11 +168,33 @@ const GameScene = ({ shoppingList, foundItems, onItemFound }) => {
 
   return (
     <>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 10, 5]} intensity={0.8} castShadow />
-      <pointLight position={[0, 5, 0]} intensity={0.5} />
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[10, 20, 10]} intensity={1.2} castShadow />
+      <directionalLight position={[-10, 20, -10]} intensity={0.8} />
+      <pointLight position={[0, 10, 0]} intensity={1} />
+      <hemisphereLight intensity={0.5} />
+      
+      <fog attach="fog" args={['#87CEEB', 30, 50]} />
 
       <StoreFloor />
+
+      {/* Store walls */}
+      <mesh position={[0, 2, -GAME_CONFIG.STORE_SIZE/2]} receiveShadow>
+        <boxGeometry args={[GAME_CONFIG.STORE_SIZE, 4, 0.5]} />
+        <meshStandardMaterial color="#e0e0e0" />
+      </mesh>
+      <mesh position={[0, 2, GAME_CONFIG.STORE_SIZE/2]} receiveShadow>
+        <boxGeometry args={[GAME_CONFIG.STORE_SIZE, 4, 0.5]} />
+        <meshStandardMaterial color="#e0e0e0" />
+      </mesh>
+      <mesh position={[-GAME_CONFIG.STORE_SIZE/2, 2, 0]} receiveShadow>
+        <boxGeometry args={[0.5, 4, GAME_CONFIG.STORE_SIZE]} />
+        <meshStandardMaterial color="#e0e0e0" />
+      </mesh>
+      <mesh position={[GAME_CONFIG.STORE_SIZE/2, 2, 0]} receiveShadow>
+        <boxGeometry args={[0.5, 4, GAME_CONFIG.STORE_SIZE]} />
+        <meshStandardMaterial color="#e0e0e0" />
+      </mesh>
 
       {/* Create aisles with shelves */}
       {[-8, -4, 4, 8].map((x, i) => (
