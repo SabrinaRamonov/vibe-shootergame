@@ -29,6 +29,76 @@ const GameHUD = ({ shoppingList, foundItems, score, timeLeft, onTimeUpdate }) =>
       padding: '20px',
       color: 'white'
     }}>
+      {/* CS 1.6 Style Crosshair */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none'
+      }}>
+        {/* Center dot */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '3px',
+          height: '3px',
+          backgroundColor: '#00ff00',
+          borderRadius: '50%',
+          boxShadow: '0 0 2px #000000'
+        }} />
+        
+        {/* Top line */}
+        <div style={{
+          position: 'absolute',
+          top: '-12px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '2px',
+          height: '8px',
+          backgroundColor: '#00ff00',
+          boxShadow: '0 0 2px #000000'
+        }} />
+        
+        {/* Bottom line */}
+        <div style={{
+          position: 'absolute',
+          top: '4px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '2px',
+          height: '8px',
+          backgroundColor: '#00ff00',
+          boxShadow: '0 0 2px #000000'
+        }} />
+        
+        {/* Left line */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '-12px',
+          transform: 'translateY(-50%)',
+          width: '8px',
+          height: '2px',
+          backgroundColor: '#00ff00',
+          boxShadow: '0 0 2px #000000'
+        }} />
+        
+        {/* Right line */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '4px',
+          transform: 'translateY(-50%)',
+          width: '8px',
+          height: '2px',
+          backgroundColor: '#00ff00',
+          boxShadow: '0 0 2px #000000'
+        }} />
+      </div>
+
       {/* Top bar */}
       <div style={{
         display: 'flex',
