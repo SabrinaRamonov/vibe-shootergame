@@ -144,6 +144,24 @@ const Weapon = ({ isShooting }) => {
         <cylinderGeometry args={[0.025, 0.02, 0.03, 8]} />
         <meshStandardMaterial color="#1a1a1a" metalness={0.9} roughness={0.2} />
       </mesh>
+      
+      {/* Muzzle flash */}
+      {flashVisible && (
+        <group position={[0, 0.02, -0.5]}>
+          {/* Bright flash */}
+          <mesh>
+            <sphereGeometry args={[0.08, 8, 8]} />
+            <meshBasicMaterial color="#ffff00" transparent opacity={0.9} />
+          </mesh>
+          {/* Outer glow */}
+          <mesh>
+            <sphereGeometry args={[0.15, 8, 8]} />
+            <meshBasicMaterial color="#ff6600" transparent opacity={0.4} />
+          </mesh>
+          {/* Light flash */}
+          <pointLight position={[0, 0, 0]} intensity={3} distance={3} color="#ffaa00" />
+        </group>
+      )}
     </group>
   );
 };
