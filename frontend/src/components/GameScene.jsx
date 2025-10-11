@@ -458,9 +458,9 @@ const GroceryItem = ({ name, position, onCollect, isFound }) => {
   );
 };
 
-// Custom FPS controller without pointer lock
-const Player = ({ onItemCollect, itemPositions, foundItems }) => {
-  const { camera, gl } = useThree();
+// Custom FPS controller with shooting
+const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
+  const { camera, gl, scene } = useThree();
   const moveSpeed = 0.1;
   const lookSpeed = 0.002;
   const keysPressed = useRef({});
