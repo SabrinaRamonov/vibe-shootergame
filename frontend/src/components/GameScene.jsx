@@ -573,11 +573,17 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
       }
     };
 
+    // Prevent right-click context menu
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
     gl.domElement.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousemove', handleMouseMove);
+    gl.domElement.addEventListener('contextmenu', handleContextMenu);
 
     const arrowInterval = setInterval(handleArrowLook, 16);
 
@@ -587,9 +593,10 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
       gl.domElement.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
+      gl.domElement.removeEventListener('contextmenu', handleContextMenu);
       clearInterval(arrowInterval);
     };
-  }, [camera, gl]);
+  }, [camera, gl, scene, onShoot]);
 
   useFrame(() => {
     const direction = new THREE.Vector3();
