@@ -477,14 +477,19 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
     };
 
     const handleMouseDown = (e) => {
-      if (e.button === 0) { // Left click
+      if (e.button === 0) { // Left click - shoot
+        handleShoot();
+      } else if (e.button === 2) { // Right click - look mode
         mouseDown.current = true;
         lastMousePos.current = { x: e.clientX, y: e.clientY };
+        e.preventDefault();
       }
     };
 
-    const handleMouseUp = () => {
-      mouseDown.current = false;
+    const handleMouseUp = (e) => {
+      if (e.button === 2) {
+        mouseDown.current = false;
+      }
     };
 
     const handleMouseMove = (e) => {
@@ -499,6 +504,46 @@ const Player = ({ onItemCollect, itemPositions, foundItems, onShoot }) => {
         camera.quaternion.setFromEuler(euler.current);
 
         lastMousePos.current = { x: e.clientX, y: e.clientY };
+      }
+    };
+
+    const handleShoot = () => {
+      // Raycast from camera center
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+      
+      // Get all item meshes
+      const itemMeshes = [];
+      scene.traverse((obj) => {
+        if (obj.userData.isItem && !obj.userData.isFound) {
+          itemMeshes.push(obj);
+        }
+      });
+      
+      const intersects = raycaster.intersectObjects(itemMeshes, true);
+      
+      if (intersects.length > 0) {
+        const hitObject = intersects[0].object;
+        // Find parent group with item name
+        let itemGroup = hitObject;
+        while (itemGroup.parent && !itemGroup.userData.itemName) {
+          itemGroup = itemGroup.parent;
+        }
+        
+        if (itemGroup.userData.itemName) {
+          onShoot(
+            camera.position.clone(),
+            intersects[0].point,
+            itemGroup.userData.itemName,
+            true
+          );
+        }
+      } else {
+        // Shoot into distance
+        const direction = new THREE.Vector3();
+        camera.getWorldDirection(direction);
+        const endPoint = camera.position.clone().add(direction.multiplyScalar(50));
+        onShoot(camera.position.clone(), endPoint, null, false);
       }
     };
 
