@@ -110,44 +110,270 @@ const Shelf = ({ position }) => {
   );
 };
 
-// Item component
+// Enhanced grocery item models
+const GroceryItemModel = ({ name, hovered }) => {
+  const color = ITEM_COLORS[name] || '#FF6B6B';
+  
+  // Different models based on item type
+  const renderItemModel = () => {
+    switch(name) {
+      case 'Milk':
+      case 'Juice':
+      case 'Water':
+        // Carton/bottle
+        return (
+          <group>
+            <mesh position={[0, 0.15, 0]}>
+              <boxGeometry args={[0.15, 0.3, 0.1]} />
+              <meshStandardMaterial color={color} roughness={0.3} metalness={0.1} />
+            </mesh>
+            <mesh position={[0, 0.32, 0]}>
+              <boxGeometry args={[0.16, 0.04, 0.11]} />
+              <meshStandardMaterial color="#ff0000" />
+            </mesh>
+          </group>
+        );
+      
+      case 'Bread':
+      case 'Butter':
+        // Loaf/package shape
+        return (
+          <mesh>
+            <boxGeometry args={[0.25, 0.12, 0.15]} />
+            <meshStandardMaterial color={color} roughness={0.6} />
+          </mesh>
+        );
+      
+      case 'Eggs':
+        // Egg carton
+        return (
+          <group>
+            <mesh>
+              <boxGeometry args={[0.2, 0.08, 0.15]} />
+              <meshStandardMaterial color={color} roughness={0.8} />
+            </mesh>
+            {/* Egg bumps */}
+            {[-0.06, 0, 0.06].map((x, i) => (
+              <mesh key={i} position={[x, 0.05, 0]}>
+                <sphereGeometry args={[0.03, 8, 8]} />
+                <meshStandardMaterial color="#fffef0" />
+              </mesh>
+            ))}
+          </group>
+        );
+      
+      case 'Cheese':
+        // Cheese wedge
+        return (
+          <mesh rotation={[0, 0, Math.PI / 8]}>
+            <boxGeometry args={[0.18, 0.15, 0.12]} />
+            <meshStandardMaterial color={color} roughness={0.4} />
+          </mesh>
+        );
+      
+      case 'Apples':
+      case 'Oranges':
+      case 'Tomatoes':
+        // Round produce
+        return (
+          <group>
+            <mesh>
+              <sphereGeometry args={[0.12, 16, 16]} />
+              <meshStandardMaterial color={color} roughness={0.5} />
+            </mesh>
+            <mesh position={[0, 0.1, 0]}>
+              <cylinderGeometry args={[0.01, 0.01, 0.03, 8]} />
+              <meshStandardMaterial color="#2d5016" />
+            </mesh>
+          </group>
+        );
+      
+      case 'Bananas':
+        // Banana bunch
+        return (
+          <group>
+            {[0, 0.15, -0.15].map((z, i) => (
+              <mesh key={i} position={[0, 0, z]} rotation={[0, 0, i * 0.2]}>
+                <capsuleGeometry args={[0.04, 0.2, 8, 16]} />
+                <meshStandardMaterial color={color} roughness={0.5} />
+              </mesh>
+            ))}
+          </group>
+        );
+      
+      case 'Carrots':
+        // Carrot bundle
+        return (
+          <group>
+            {[-0.05, 0, 0.05].map((x, i) => (
+              <group key={i} position={[x, 0, 0]}>
+                <mesh rotation={[0, 0, Math.PI]}>
+                  <coneGeometry args={[0.03, 0.2, 8]} />
+                  <meshStandardMaterial color={color} roughness={0.6} />
+                </mesh>
+                <mesh position={[0, 0.12, 0]}>
+                  <cylinderGeometry args={[0.02, 0.02, 0.05, 6]} />
+                  <meshStandardMaterial color="#228b22" />
+                </mesh>
+              </group>
+            ))}
+          </group>
+        );
+      
+      case 'Chicken':
+      case 'Beef':
+      case 'Fish':
+        // Meat package
+        return (
+          <group>
+            <mesh>
+              <boxGeometry args={[0.22, 0.08, 0.18]} />
+              <meshStandardMaterial color={color} roughness={0.3} metalness={0.2} />
+            </mesh>
+            <mesh position={[0, 0.041, 0]}>
+              <boxGeometry args={[0.18, 0.001, 0.14]} />
+              <meshStandardMaterial color="#ffffff" />
+            </mesh>
+          </group>
+        );
+      
+      case 'Rice':
+      case 'Pasta':
+      case 'Flour':
+      case 'Sugar':
+        // Bag
+        return (
+          <mesh>
+            <boxGeometry args={[0.18, 0.25, 0.12]} />
+            <meshStandardMaterial color={color} roughness={0.7} />
+          </mesh>
+        );
+      
+      case 'Cereal':
+        // Cereal box
+        return (
+          <group>
+            <mesh>
+              <boxGeometry args={[0.16, 0.3, 0.08]} />
+              <meshStandardMaterial color={color} roughness={0.5} />
+            </mesh>
+            <mesh position={[0, 0.1, 0.041]}>
+              <boxGeometry args={[0.12, 0.12, 0.001]} />
+              <meshStandardMaterial color="#ffffff" />
+            </mesh>
+          </group>
+        );
+      
+      case 'Coffee':
+      case 'Tea':
+        // Can/jar
+        return (
+          <mesh>
+            <cylinderGeometry args={[0.08, 0.08, 0.2, 16]} />
+            <meshStandardMaterial color={color} roughness={0.3} metalness={0.6} />
+          </mesh>
+        );
+      
+      case 'Yogurt':
+        // Yogurt cup
+        return (
+          <mesh>
+            <cylinderGeometry args={[0.07, 0.08, 0.12, 16]} />
+            <meshStandardMaterial color={color} roughness={0.4} />
+          </mesh>
+        );
+      
+      case 'Soda':
+        // Can
+        return (
+          <mesh>
+            <cylinderGeometry args={[0.06, 0.06, 0.2, 16]} />
+            <meshStandardMaterial color={color} roughness={0.1} metalness={0.9} />
+          </mesh>
+        );
+      
+      case 'Chips':
+        // Chip bag
+        return (
+          <mesh>
+            <boxGeometry args={[0.2, 0.25, 0.08]} />
+            <meshStandardMaterial color={color} roughness={0.6} metalness={0.3} />
+          </mesh>
+        );
+      
+      default:
+        // Default box
+        return (
+          <mesh>
+            <boxGeometry args={[0.2, 0.2, 0.15]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+        );
+    }
+  };
+
+  return (
+    <group scale={hovered ? 1.3 : 1}>
+      {renderItemModel()}
+      {/* Glow effect when hovered */}
+      {hovered && (
+        <mesh>
+          <sphereGeometry args={[0.3, 16, 16]} />
+          <meshBasicMaterial color="#ffff00" transparent opacity={0.2} />
+        </mesh>
+      )}
+    </group>
+  );
+};
+
+// Item component with enhanced model
 const GroceryItem = ({ name, position, onCollect, isFound }) => {
-  const meshRef = useRef();
+  const groupRef = useRef();
   const [hovered, setHovered] = useState(false);
   
   useFrame((state) => {
-    if (meshRef.current && !isFound) {
-      meshRef.current.rotation.y += 0.01;
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.05;
+    if (groupRef.current && !isFound) {
+      groupRef.current.rotation.y += 0.01;
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 2) * 0.03;
     }
   });
 
   if (isFound) return null;
 
   return (
-    <group position={position}>
-      <mesh
-        ref={meshRef}
+    <group position={position} ref={groupRef}>
+      <group
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
-        scale={hovered ? 1.2 : 1}
       >
-        <boxGeometry args={[0.4, 0.4, 0.4]} />
-        <meshStandardMaterial 
-          color={ITEM_COLORS[name] || '#FF6B6B'}
-          emissive={hovered ? '#ffffff' : '#000000'}
-          emissiveIntensity={hovered ? 0.3 : 0}
-        />
-      </mesh>
+        <GroceryItemModel name={name} hovered={hovered} />
+      </group>
+      
+      {/* Item label */}
       <Text
-        position={[0, 0.5, 0]}
-        fontSize={0.2}
+        position={[0, 0.4, 0]}
+        fontSize={0.15}
         color="#000000"
         anchorX="center"
         anchorY="middle"
+        outlineWidth={0.02}
+        outlineColor="#ffffff"
       >
         {name}
       </Text>
+      
+      {/* Floating indicator */}
+      {hovered && (
+        <Text
+          position={[0, 0.6, 0]}
+          fontSize={0.12}
+          color="#22c55e"
+          anchorX="center"
+          anchorY="middle"
+        >
+          Walk here!
+        </Text>
+      )}
     </group>
   );
 };
